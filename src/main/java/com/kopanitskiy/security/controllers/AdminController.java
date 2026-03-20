@@ -60,11 +60,11 @@ public class AdminController {
 
     @GetMapping("/updateUser/{id}")
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
-        User user = userService.getUserById(id); // Получаем пользователя по ID
-        List<Role> allRoles = roleService.getAllRoles(); // Получаем все роли
-        model.addAttribute("user", user); // Добавляем пользователя в модель
-        model.addAttribute("allRoles", allRoles); // Добавляем список ролей в модель
-        return "addNewView"; // Возвращаем представление для обновления пользователя
+        User user = userService.getUserById(id);
+        List<Role> allRoles = roleService.getAllRoles();
+        model.addAttribute("user", user);
+        model.addAttribute("allRoles", allRoles);
+        return "addNewView";
     }
 
     @PostMapping("/updateUser/{id}")

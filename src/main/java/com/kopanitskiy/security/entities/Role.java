@@ -5,15 +5,15 @@ import org.springframework.security.core.GrantedAuthority;
 
 
 @Entity
-@Table(name="roles")
+@Table(name = "roles")
 public class Role implements GrantedAuthority {
 
     @Id
-    @Column(name="role_id")
+    @Column(name = "role_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="rolename")
+    @Column(name = "rolename")
     private String rolename;
 
     public Role() {

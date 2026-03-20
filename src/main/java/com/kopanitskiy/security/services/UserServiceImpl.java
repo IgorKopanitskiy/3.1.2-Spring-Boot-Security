@@ -73,7 +73,6 @@ public class UserServiceImpl implements UserService {
         user.setCitizenship(userUpdate.getCitizenship());
         user.setPassword(userUpdate.getPassword());
 
-        // Преобразуем List<Long> в Set<Role>
         if (roles != null) {
             Set<Role> roleSet = new HashSet<>();
             for (Long roleId : roles) {
@@ -85,7 +84,6 @@ public class UserServiceImpl implements UserService {
             }
             user.setRoles(roleSet);
         }
-
         userDao.save(user);
     }
 
@@ -97,7 +95,6 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UsernameNotFoundException("Пользователь с именем " + username + "не найден");
         }
-
         return user;
     }
 
