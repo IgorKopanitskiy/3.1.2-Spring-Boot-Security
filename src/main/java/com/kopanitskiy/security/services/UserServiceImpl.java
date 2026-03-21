@@ -1,6 +1,5 @@
 package com.kopanitskiy.security.services;
 
-
 import com.kopanitskiy.security.entities.Role;
 import com.kopanitskiy.security.entities.User;
 import com.kopanitskiy.security.repositories.UserDao;
@@ -31,15 +30,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void saveUser(User user, List<Long> roles) {
-        if (roles != null) {
-            Set<Role> roleSet = new HashSet<>();
-            for (Long roleId : roles) {
-                Role role = roleService.getRoleById(roleId);
-                if (role == null) {
-                    throw new IllegalArgumentException("Роль с id: " + roleId + " не найдена");
-                }
-                roleSet.add(role);
+        if (roles != null && !roles.isEmpty()) {
+            List<Role> roleList = roleService.getRolesByIds(roles);
+            if (roleList.size() != roles.size()) {
+                throw new IllegalArgumentException("Некоторые роли не найдены для идентификаторов: " + roles);
             }
+
+            Set<Role> roleSet = new HashSet<>(roleList);
             user.setRoles(roleSet);
         }
 
@@ -59,8 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long id) {
-        User user = getUserById(id);
-        userDao.delete(user);
+        userDao.deleteById(id);
     }
 
     @Override
@@ -73,15 +69,12 @@ public class UserServiceImpl implements UserService {
         user.setCitizenship(userUpdate.getCitizenship());
         user.setPassword(userUpdate.getPassword());
 
-        if (roles != null) {
-            Set<Role> roleSet = new HashSet<>();
-            for (Long roleId : roles) {
-                Role role = roleService.getRoleById(roleId);
-                if (role == null) {
-                    throw new IllegalArgumentException("Роль с id: " + roleId + " не найдена");
-                }
-                roleSet.add(role);
+        if (roles != null && !roles.isEmpty()) {
+            List<Role> roleList = roleService.getRolesByIds(roles);
+            if (roleList.size() != roles.size()) {
+                throw new IllegalArgumentException("Некоторые роли не найдены для идентификаторов: " + roles);
             }
+            Set<Role> roleSet = new HashSet<>(roleList);
             user.setRoles(roleSet);
         }
         userDao.save(user);
@@ -90,12 +83,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username);
+        return userDao.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь с именем " + username + "не найден"));
 
-        if (user == null) {
-            throw new UsernameNotFoundException("Пользователь с именем " + username + "не найден");
-        }
-        return user;
     }
 
 }
